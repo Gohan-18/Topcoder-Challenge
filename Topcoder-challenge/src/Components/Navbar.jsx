@@ -18,14 +18,14 @@ export default function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <AppBar position="static" sx={{height: '80px', display: 'flex', alignItems: 'space-between', justifyContent: 'center', px: '20px'}} >
+      <AppBar position="fixed" sx={{height: '80px', display: 'flex', alignItems: 'space-between', justifyContent: 'center', px: '20px'}} >
         <Toolbar>
           
             <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            sx={{ flexGrow: 1 , display: {xs: 'none', sm: 'inline-block'}}}
             >
             TopCoder
             </Typography>
@@ -37,8 +37,8 @@ export default function Navbar() {
             </>
              :
              <>
-             <Button onClick={navigateProfile} sx={{mx:'20px'}} variant='contained' color='success'>Profile</Button>
-             <Button variant='contained' color='success' >Create Learning Space** **</Button>
+             <Button onClick={navigateProfile} sx={{mx:'20px', fontSize: {xs: '12px', sm: '16px'}}} variant='contained' color='success'>Profile</Button>
+             <Button variant='contained' color='success' sx={{fontSize: {xs: '12px', sm: '16px'}}} >Create Learning Space** **</Button>
              </>
             }
 

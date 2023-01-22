@@ -1,15 +1,43 @@
 import { InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { Box, Container, TextField, Button, IconButton } from '@mui/material';
-import React, { useState } from 'react';
-import { useAuth } from '../firebase/Auth';
+import React, { useEffect, useState } from 'react';
+import { db, useAuth } from '../firebase/Auth';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import { Form, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
+import { collection, getDocs } from 'firebase/firestore'
 
 export default function Profile() {
 
-  const [country, setCountry] = useState('');
+  // const [country, setCountry] = useState('');
+  const [userDetails, setUserDetails] = useState([]);
   const [edit, setEdit] = useState(true);
+
+  async function getUserDetails () {
+    const userDetailsRef = collection(db, 'topcoderData');
+    await getDocs(userDetailsRef).then(res => {
+      // console.log(res);
+      const userData = res.docs.map(doc => ({
+        data: doc.data(),
+        id: doc.id,
+      }))
+      console.log(userData);
+      setUserDetails(userData);
+    }).catch((e) => console.log(e.message))
+  }
+
+  useEffect(() => {
+    getUserDetails();
+  }, [])
+
+  const [userData] = userDetails;
+  // const {data} = userData;
+  // setTimeout(() => {
+  //   const {data} = userData;
+  //   console.log(data)     
+  // }, 3000)
+
+  
 
   const handleChange = (event) => {
     setCountry(event.target.value);
@@ -53,12 +81,13 @@ export default function Profile() {
             <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', mb: '40px'}} >
               <Avatar sx={{width: '70px', height: '70px',bgcolor: '#ff6700'}} alt={user.displayName} src="" />
             </Box>
-            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: '20px'}} >
+            <Box sx={{display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'column', mb: '20px'}} >
+            <Typography gutterBottom sx={{fontSize: '15px', pl: '5px'}} >Name</Typography>
               <TextField
                 autoComplete='off'
                 name='name'
                 id="name"
-                label='Name'
+                // label='Name'
                 defaultValue={user.displayName}
                 InputProps={{
                   readOnly:edit,
@@ -68,12 +97,14 @@ export default function Profile() {
                 }}
               />
             </Box>
-            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: '20px'}} >
+            <Box sx={{display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'column', mb: '20px'}} >
+            <Typography gutterBottom sx={{fontSize: '15px', pl: '5px'}} >Biography</Typography>
               <TextField
                 autoComplete='off'
                 name='biography'
                 id="biography"
-                label='Biography'
+                // label='Biography'
+                value={userData?.data?.biography}
                 multiline
                 minRows={4}
                 InputProps={{
@@ -84,12 +115,14 @@ export default function Profile() {
                 }}
               />
             </Box>
-            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: '20px'}} >
+            <Box sx={{display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'column', mb: '20px'}} >
+              <Typography gutterBottom sx={{fontSize: '15px', pl: '5px'}} >Country</Typography>
               <TextField
+                value={userData?.data?.country}
                 autoComplete='off'
                 name='country'
                 id="country"
-                label='Country'
+                // label='Country'
                 InputProps={{
                   readOnly: edit,
                 }}
@@ -98,9 +131,27 @@ export default function Profile() {
                 }}
               />
             </Box>
-            {!edit && <Button type='submit' fullWidth variant='contained' color='success'>Update</Button>}
+            <Box sx={{display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'column', mb: '20px'}} >
+            <Typography gutterBottom sx={{fontSize: '15px', pl: '5px'}} >Interests</Typography>
+              <TextField
+                defaultValue={userData?.data?.interests}
+                multiline
+                minRows={4}
+                autoComplete='off'
+                name='interests'
+                id="interests"
+                // label='Interests'
+                InputProps={{
+                  readOnly: edit,
+                }}
+                sx={{
+                  width:'100%'
+                }}
+              />
+            </Box>
+            {/* {!edit && <Button type='submit' fullWidth variant='contained' color='success'>Update</Button>} */}
           </Form>
-          {edit && <Button onClick={() => setEdit(!edit)} fullWidth variant='contained'>Edit Info</Button>}
+          {/* {edit && <Button onClick={() => setEdit(!edit)} fullWidth variant='contained'>Edit Info</Button>} */}
         </Box>
         {/* <Container maxWidth='lg'>
           <Button fullWidth variant='contained' color='error' onClick={logOut}>LogOut</Button>
